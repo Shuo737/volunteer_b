@@ -1,0 +1,144 @@
+drop domain if exists id cascade;
+drop domain if exists acronym cascade;
+drop domain if exists vname cascade;
+drop domain if exists mdesc cascade;
+drop domain if exists position cascade;
+drop domain if exists ename cascade; 
+drop domain if exists stime cascade;
+drop domain if exists etime cascade;
+drop domain if exists edesc cascade;
+drop domain if exists lname cascade;
+drop domain if exists addr cascade;
+drop domain if exists phone cascade;
+drop domain if exists email cascade;
+drop domain if exists fax cascade;
+drop domain if exists photo cascade;
+drop domain if exists password cascade;
+drop domain if exists organ cascade;
+
+drop table if exists members cascade;
+drop table if exists events cascade;
+drop table if exists locations cascade;
+drop table if exists members_events cascade;
+drop table if exists members_locations cascade;
+drop table if exists events_locations cascade;
+
+create domain id numeric(5,0);
+create domain acronym varchar(5);
+create domain vname varchar(50);
+create domain position varchar(50);
+create domain password varchar(10);
+create domain mdesc varchar(200);
+create domain ename varchar(50);
+create domain stime timestamp;
+create domain etime timestamp;
+create domain edesc varchar(200);
+create domain lname varchar(50);
+create domain addr varchar(100);
+create domain city varchar(50);
+create domain province varchar(50);
+create domain nation varchar(50);
+create domain phone numeric(10,0);
+create domain email varchar(50);
+create domain fax varchar(50);
+create domain photo varchar(50);
+create domain password varchar(16);
+create domain organ varchar(50);
+
+create table members (
+	mbid id not null,
+	mbacronym acronym not null,
+	mbname vname not null,
+	mbphone phone,
+	mbemail email,
+	mbmdesc mdesc,
+	primary key (mbid, mbacronym)
+);
+
+create table events (
+	evename ename not null,
+	evstime stime not null,
+	evetime etime not null,
+	evedesc edesc not null,
+	check(stime < etime),
+	primary key (ename, stime)
+);
+
+create table locations (
+	loclname lname not null,
+	locaddr addr not null,
+	loccity city not null,
+	locprov province not null,
+	locnation nation not null,
+	locphone phone,
+	locemail email,
+	locfax fax,
+	locldesc edesc not null,
+	primary key (loclname);
+);
+
+create table management (
+	mtid id not null,
+	mtacronym acronym not null,
+	mtpassword password not null,
+	mtposition position not null,
+	mbphoto photo,
+	foreign key (mtid, mtacronym)
+		references members
+			on update cascade
+			on delete set null,
+	primary key (mtid, mtacronym)
+);
+
+create table members_events (
+	meid id not null,
+	meacronym acronym not null,
+	meename ename not null,
+	mestime stime not null,
+	meetime etime not null,
+	foreign key (meid, meacronym) 
+		references members
+			on update cascade
+			on delete set null,
+	foreign key (meename, mestime)
+		references events
+			on update cascade
+			on delete set null,
+	check (mestime < meetime)
+	primary key (meid, meacronym, meename, mestime)
+);
+
+create table members_locations (
+	mlid id not null,
+	mlacronym acronym not null,
+	mllname lname not null,
+	mlstime stime not null,
+	mletime etime not null,
+	foreign key (mlid, mlacronym)
+		references members
+			on update cascade
+			on delete set null,
+	foreign key (mllname)
+		references locations
+			on update cascade
+			on delete set null,
+	check (mlstime < mletime),
+	primary key (mlid, mlacronym, mllname, mlstime)
+);
+
+create table events_locations (
+	elename ename not null,
+	elstime stime not null,
+	ellname lname not null,
+	eletime etime not null,
+	foreign key (elename, elstime)
+		references events
+			on update cascade
+			on delete set null,
+	foreign key (ellname) 
+		references locations
+			on update cascade
+			on delete set null,
+	check (elstime < eletime)
+	primary key (elename, elstime, ellname)
+);

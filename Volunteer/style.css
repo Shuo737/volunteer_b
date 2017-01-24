@@ -1,0 +1,29 @@
+/*demo 0*/
+.demo-card-wide.mdl-card {
+  width: 512px;
+}
+.demo-card-wide > .mdl-card__title {
+  color: #fff;
+  height: 240px;
+  background: url('./img/temp_welcome_1.jpg') center / cover;
+}
+.demo-card-wide > .mdl-card__menu {
+  color: #fff;
+}
+
+.demo-card-wide > .mdl-card__supporting-text {
+	color: #222;
+}
+
+
+/*demo 1*/
+.demo-layout-transparent {
+  background: url('./img/temp_welcome_1.jpg') center / cover;
+  height: 400px;
+}
+.demo-layout-transparent .mdl-layout__header,
+.demo-layout-transparent .mdl-layout__drawer-button {
+  /* This background is dark, so we set text to white. Use 87% black instead if
+     your background is light. */
+  color: white;
+}
